@@ -7,7 +7,8 @@ import {ZipFile} from 'yazl'
 const isAsset = (entry: any): entry is OutputAsset => !!entry.isAsset
 
 interface IPluginOptions {
-  file?: string
+  file?: string,
+  dest?: string,
 }
 
 const enum Cache {
@@ -20,7 +21,9 @@ export default (options?: IPluginOptions): Plugin => ({
   generateBundle({dir}) {
     // Save the output directory path
     let outDir = process.cwd()
-    if (dir) {
+    if (options && options.dest) {
+      outDir = path.resolve(outDir, options.dest)
+    } else if (dir) {
       outDir = path.resolve(outDir, dir)
     }
     this.cache.set(Cache.outdir, outDir)
